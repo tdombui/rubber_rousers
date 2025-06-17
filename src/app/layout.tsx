@@ -11,7 +11,7 @@ const geistMono = Geist_Mono({
 });
 export const metadata: Metadata = {
   title: "Rubber Rousers",
-  description: "Get a grip. Don't slip. The world's first online marketplace for used racing and touring tires.",
+  description: "Get a grip. Don't slip. The world's first online marketplace for pre-owned performance and touring tires.",
 };
 export default function RootLayout({
   children,
