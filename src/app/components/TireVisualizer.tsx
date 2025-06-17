@@ -8,9 +8,7 @@ export default function TireVisualizer() {
   const [aspectRatio, setAspectRatio] = useState(45);
   const [diameter, setDiameter] = useState(18);
 
-  const topViewSize = diameter * 12 + 100;
-  // const sideViewHeight = diameter * 12 + 100;
-  // const sideViewWidth = width * 0.5;
+  const topViewSize = 300;
 
   const treadBasePrice = (tread / 100) * 100;
   const widthPremium = Math.max(0, (width - 245) * 0.4);
@@ -20,6 +18,19 @@ export default function TireVisualizer() {
   const totalPrice = (treadBasePrice + widthPremium + aspectPremium + diameterPremium).toFixed(2);
   const maxMiles = 40000;
   const estimatedRange = Math.round((tread / 100) * maxMiles);
+
+  const VALID = {
+    widths: [215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315, 325, 335, 345, 355],
+    aspectRatios: [25, 30, 35, 40, 45, 50, 55, 60, 65, 70],
+    diameters: [17, 18, 19, 20, 21, 22, 23],
+  };
+
+  const isValidSpec =
+    VALID.widths.includes(width) &&
+    VALID.aspectRatios.includes(aspectRatio) &&
+    VALID.diameters.includes(diameter);
+
+  const isCupSportLikely = width >= 345 && aspectRatio <= 30 && diameter >= 20;
 
   return (
     <div className="flex flex-col items-center gap-6 p-12 bg-black/60 border border-white/20 rounded-xl">
@@ -40,34 +51,24 @@ export default function TireVisualizer() {
 
       {/* Tire Images */}
       <div className="flex flex-col md:flex-row items-end justify-center gap-12 m-8">
-        <div
-          className="relative"
-          style={{ width: `${topViewSize}px`, height: `${topViewSize}px` }}
-        >
+        <div className="relative" style={{ width: `${topViewSize}px`, height: `${topViewSize}px` }}>
           <Image
-            src="/tire.png"
-            alt="Top-down tire view"
+            src={`/tires/michelin/pilotsport/front/${width}.webp`}
+            alt={`${width}mm Front View`}
             fill
             className="object-contain"
             priority
           />
         </div>
 
-        <div
-          className="relative"
-          style={{
-            width: `${diameter * 8 + 80}px`, // scales width slightly with diameter
-            height: `${topViewSize}px`,      // match top view height for alignment
-          }}
-        >
+        <div className="relative" style={{ width: `${topViewSize}px`, height: `${topViewSize}px` }}>
           <Image
-            src="/tire_f.png"
-            alt="Side tire view"
+            src={`/tires/michelin/pilotsport/side/${diameter}.webp`}
+            alt={`${diameter}in Side View`}
             fill
             className="object-contain"
           />
         </div>
-
       </div>
 
       {/* Spec Summary Card */}
@@ -75,24 +76,31 @@ export default function TireVisualizer() {
         <div className="text-xl font-bold">
           Selected Spec: <span className="font-light">{width}/{aspectRatio}/{diameter}</span>
         </div>
-
         <div className="text-xl font-bold">
           Estimated driving range: <span className="text-yellow-300 font-light">{estimatedRange.toLocaleString()} miles</span>
         </div>
-
         <div className="rounded-xl text-2xl font-bold">
-          Price:
-          <span className="text-emerald-400 font-light">${totalPrice}</span>
-          <span className="font-light">per tire</span>
+          Price: <span className="text-emerald-400 font-light">${totalPrice}</span>
+          <span className="font-light"> per tire</span>
         </div>
+
+        {!isValidSpec && (
+          <div className="mt-4 text-red-400 font-semibold">
+            ❌ The spec {width}/{aspectRatio}/{diameter} is not available for Pilot Sport 4S.
+          </div>
+        )}
+
+        {isValidSpec && isCupSportLikely && (
+          <div className="mt-2 text-yellow-300 text-sm font-light">
+            ⚠️ This size is typically found on track-focused Cup Sport or Cup 2 tires.
+          </div>
+        )}
       </div>
 
       {/* Sliders Card */}
       <div className="w-full max-w-md rounded-xl bg-white/10 backdrop-blur-lg shadow-lg p-6 space-y-4 border border-white/20">
         <div>
-          <label className="block mb-1 font-semibold text-white">
-            Tire Life/Tread Depth ({tread}%)
-          </label>
+          <label className="block mb-1 font-semibold text-white">Tire Life/Tread Depth ({tread}%)</label>
           <input
             type="range"
             min={30}
@@ -105,13 +113,11 @@ export default function TireVisualizer() {
         </div>
 
         <div>
-          <label className="block mb-1 font-semibold text-white">
-            Tire Width ({width}mm)
-          </label>
+          <label className="block mb-1 font-semibold text-white">Tire Width ({width}mm)</label>
           <input
             type="range"
-            min={205}
-            max={335}
+            min={215}
+            max={355}
             step={10}
             value={width}
             onChange={(e) => setWidth(parseInt(e.target.value))}
@@ -120,12 +126,10 @@ export default function TireVisualizer() {
         </div>
 
         <div>
-          <label className="block mb-1 font-semibold text-white">
-            Aspect Ratio ({aspectRatio})
-          </label>
+          <label className="block mb-1 font-semibold text-white">Aspect Ratio ({aspectRatio})</label>
           <input
             type="range"
-            min={30}
+            min={25}
             max={70}
             step={5}
             value={aspectRatio}
@@ -135,12 +139,10 @@ export default function TireVisualizer() {
         </div>
 
         <div>
-          <label className="block mb-1 font-semibold text-white">
-            Wheel Diameter ({diameter}in)
-          </label>
+          <label className="block mb-1 font-semibold text-white">Wheel Diameter ({diameter}in)</label>
           <input
             type="range"
-            min={16}
+            min={17}
             max={23}
             step={1}
             value={diameter}
@@ -153,10 +155,14 @@ export default function TireVisualizer() {
       {/* Action Buttons */}
       <div className="flex flex-wrap justify-center gap-4">
         <button
-          className="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors"
-          onClick={() => alert('Order placed for pickup!')}
+          disabled={!isValidSpec}
+          className={`px-6 py-2 text-white rounded-xl transition-colors ${isValidSpec
+            ? 'bg-emerald-600 hover:bg-emerald-700'
+            : 'bg-gray-600 cursor-not-allowed'
+            }`}
+          onClick={() => isValidSpec && alert('Order placed for pickup!')}
         >
-          Buy now
+          {isValidSpec ? 'Buy now' : 'Unavailable'}
         </button>
 
         <button

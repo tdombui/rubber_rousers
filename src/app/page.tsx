@@ -12,7 +12,7 @@ export default function Home() {
       }}
     >
       {/* Sticky Top Nav */}
-      <header className="sticky top-0 z-50 w-full text-white text-center p-2 py-4 shadow-lg pt-8">
+      <header className="top-0 z-50 w-full text-white text-center p-2 py-4 shadow-lg pt-8">
         <h1
           className="text-4xl sm:text-4xl font-bold select-none"
         >
