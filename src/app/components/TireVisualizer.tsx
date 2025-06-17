@@ -9,8 +9,8 @@ export default function TireVisualizer() {
   const [diameter, setDiameter] = useState(18);
 
   const topViewSize = diameter * 12 + 100;
-  const sideViewHeight = diameter * 12 + 100;
-  const sideViewWidth = width * 0.5;
+  // const sideViewHeight = diameter * 12 + 100;
+  // const sideViewWidth = width * 0.5;
 
   const treadBasePrice = (tread / 100) * 100;
   const widthPremium = Math.max(0, (width - 245) * 0.4);

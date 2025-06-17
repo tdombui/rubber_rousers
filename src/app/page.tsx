@@ -1,4 +1,3 @@
-import Image from "next/image";
 import TireVisualizer from "@/app/components/TireVisualizer";
 
 export default function Home() {
